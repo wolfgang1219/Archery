@@ -42,6 +42,7 @@ urlpatterns = [
     path("detail/<int:workflow_id>/", views.detail, name="detail"),
     path("passed/", sql_workflow.passed),
     path("execute/", sql_workflow.execute),
+    path("accept/", sql_workflow.accept),
     path("timingtask/", sql_workflow.timing_task),
     path("alter_run_date/", sql_workflow.alter_run_date),
     path("cancel/", sql_workflow.cancel),

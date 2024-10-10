@@ -383,6 +383,7 @@ class WorkflowAudit(models.Model):
     current_status = models.IntegerField("审核状态", choices=WorkflowStatus.choices)
     create_user = models.CharField("申请人", max_length=30)
     create_user_display = models.CharField("申请人中文名", max_length=50, default="")
+    is_accept = models.BooleanField("是否通过验收", default=False)
     create_time = models.DateTimeField("申请时间", auto_now_add=True)
     sys_time = models.DateTimeField("系统时间", auto_now=True)
 
@@ -964,6 +965,7 @@ class Permission(models.Model):
             ("sql_review", "审核SQL上线工单"),
             ("sql_execute_for_resource_group", "执行SQL上线工单(资源组粒度)"),
             ("sql_execute", "执行SQL上线工单(仅自己提交的)"),
+            ("sql_accept", "执行SQL验收"),
             ("sql_analyze", "执行SQL分析"),
             ("optimize_sqladvisor", "执行SQLAdvisor"),
             ("optimize_sqltuning", "执行SQLTuning"),

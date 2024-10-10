@@ -116,6 +116,7 @@ def _sql_workflow_list(request):
         "db_name",
         "group_name",
         "syntax_type",
+        "is_accept",
     )
 
     # QuerySet 序列化
@@ -367,6 +368,44 @@ def execute(request):
         if is_notified:
             notify_for_execute(workflow=SqlWorkflow.objects.get(id=workflow_id))
     return HttpResponseRedirect(reverse("sql:detail", args=(workflow_id,)))
+
+
+def accept(request):
+    """
+    验收工单
+    :param request:
+    :return:
+    """
+    # 校验多个权限
+    if not (
+        request.user.has_perm("sql.sql_accept")
+    ):
+        raise PermissionDenied
+    workflow_id = int(request.POST.get("workflow_id", 0))
+    if workflow_id == 0:
+        context = {"errMsg": "workflow_id参数为空."}
+        return render(request, "error.html", context)
+
+    # 获取审核信息
+    audit_id = Audit.detail_by_workflow_id(
+        workflow_id=workflow_id, workflow_type=WorkflowType.SQL_REVIEW
+    ).audit_id
+
+    # 验收工单
+    SqlWorkflow(id=workflow_id, is_accept=True).save(
+        update_fields=["is_accept"]
+    )
+    # 增加工单日志
+    Audit.add_log(
+        audit_id=audit_id,
+        operation_type=7,
+        operation_type_desc="验收工单",
+        operation_info="验收完成",
+        operator=request.user.username,
+        operator_display=request.user.display,
+    )
+    result = {"msg": "", "data": ""}
+    return HttpResponse(json.dumps(result), content_type="application/json")
 
 
 def timing_task(request):

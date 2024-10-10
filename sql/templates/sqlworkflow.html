@@ -250,6 +250,7 @@
                     title: '操作',
                     field: 'operation',
                     formatter: function (value, row, index) {
+                        let is_accept = "<button class=\"btn btn-info btn-xs\" workflow_id=\"" + row.id + "\"\n" + "onclick=\"getLog(this)\" >操作日志\n" + "</button>"
                         return "<button class=\"btn btn-info btn-xs\" workflow_id=\"" + row.id + "\"\n" + "onclick=\"getLog(this)\" >操作日志\n" + "</button>"
                     }
                 }],
